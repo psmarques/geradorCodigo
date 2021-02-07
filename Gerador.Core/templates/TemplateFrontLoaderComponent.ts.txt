@@ -1,0 +1,51 @@
+﻿loader.component.css
+----------------------------------------------------------------
+.overlay {
+  position: fixed;
+  display: block;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(74,74,74,.8);
+  z-index: 99999;
+}
+
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+
+loader.component.html
+----------------------------------------------------------------
+<div *ngIf="isLoading | async" class="d-flex justify-content-center overlay">
+  <div class="spinner-border my-auto" role="status">
+    <span class="sr-only spinner">Loading...</span>
+  </div>
+</div>
+
+
+loader.component.ts
+----------------------------------------------------------------
+import { Component } from '@angular/core';
+import { Subject } from 'rxjs';
+import { LoaderService } from '../../services/loader.service';
+@Component({
+  selector: 'loader',
+  templateUrl: './loader.component.html',
+  styleUrls: ['./loader.component.css']
+})
+export class LoaderComponent {
+  color = 'primary';
+  mode = 'indeterminate';
+  value = 50;
+  isLoading: Subject<boolean> = this.loaderService.isLoading;
+
+  constructor(private loaderService: LoaderService) {
+
+  }
+
+}

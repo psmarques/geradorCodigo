@@ -1,0 +1,47 @@
+﻿
+<h2 class="animated tada">
+  <i class="far fa-address-card"></i>
+  Lista de {Classname}
+</h2>
+<div *ngIf="errorMessage" [ngClass]="(success)?'success':'danger'">
+  {{ errorMessage }}
+</div>
+
+
+<div *ngIf="modo=='List' && user" class="animated flipInX mod">
+  <ul>
+    <li *ngIf="{classname}s.length==0">Não existem {classname}s!</li>
+    <li *ngFor="let item of {classname}s">
+{listgrid}
+      &nbsp;
+      <button (click)="edit(item)"><i class="far fa-file"></i></button>
+      <button (click)="remove(item)"><i class="far fa-trash-alt"></i></button>
+    </li>
+    <li>
+      <button class="button float-right" (click)="alterarModo()"><i class="far fa-user-plus"></i> Criar Novo</button>
+    </li>
+  </ul>
+</div>
+
+
+<div *ngIf="modo=='Novo'" class="animated flipInX mod">
+  <form [formGroup]="form" autocomplete="off">
+
+    <fieldset>
+      <div class="form-group" *ngIf="id">
+        <label for="Id">Id: </label>
+        <input type="text" class="form-control" maxlength="60" formControlName="id" readonly="readonly">
+      </div>
+
+{diveditor}
+
+      <br />
+      <div class="text-center">
+        <button class="button" [disabled]="form.invalid" (click)="salvar()"><i class="far fa-save"></i> Salvar</button>
+        <button class="button" (click)="voltar()"><i class="far fa-undo"></i> Voltar</button>
+      </div>
+
+
+    </fieldset>
+  </form>
+</div>

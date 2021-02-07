@@ -1,0 +1,160 @@
+﻿import { Component, OnInit } from '@angular/core';
+import { FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { SocialUser } from 'angularx-social-login';
+import { {Classname} } from '../../models/{classname}.model';
+import { {Classname}Service } from '../../services/{classname}.service';
+import { SessionService } from '../../services/session.service';
+
+@Component({
+  selector: 'app-{classname}',
+  templateUrl: './{classname}.component.html',
+})
+export class {Classname}Component implements OnInit {
+
+  public errorMessage: String;
+  public {classname}s: {Classname}[] = [];
+  public {classname}: {Classname} = new {Classname}();
+  public form: FormGroup;
+  public modo: String = "List";
+  public success: Boolean = false;
+  public versao: String = "1.0.1";
+  public user: SocialUser;
+
+  id: String;
+
+  constructor(private fb: FormBuilder, private api{Classname}: {Classname}Service, private session: SessionService) {
+
+    this.form = this.fb.group({
+{propertyForm}
+    });
+
+  }
+
+  ngOnInit(): void {
+    //throw new Error('Method not implemented.');
+    this.user = this.session.getUser();
+
+    this.session.userObservable.subscribe(val => {
+
+      if (val == null) return;
+      this.user = val as SocialUser;
+
+      this.load{Classname}();
+    });
+
+    if (this.user != null)
+      this.load{Classname}();
+  }
+
+  ngOnDestroy(): void {
+    this.session.userObservable.unsubscribe();
+  }
+
+  private load{Classname}() {
+
+    this.user = this.session.getUser();
+
+    if (this.user == null)
+      return;
+
+    this.api{Classname}.getAll().subscribe(result => {
+      console.log(result);
+      this.{classname} = result;
+    },
+      error => {
+        console.log(error);
+        this.exibirAlerta(error.message, false);
+      });
+  }
+
+  remove(item: {Classname}) {
+
+    this.api{Classname}.delete(item.id).subscribe(result => {
+      this.exibirAlerta(result.message, result.success);
+      this.load{Classname}();
+    },
+      error => {
+        console.log(error);
+        this.exibirAlerta(error.message, false);
+      });
+  }
+
+  salvar() {
+    //this.{classname} = new {Classname}(this.form.controls.id.value, this.form.controls.primeiroNome.value, this.form.controls.ultimoNome.value, this.form.controls.email.value, this.form.controls.telefoneDDD.value, this.form.controls.telefoneNumero.value);
+
+    if (this.id) {
+
+      this.api{Classname}.update(this.{classname}).subscribe(
+        result => {
+
+          this.exibirAlerta(result.message, result.success);
+
+          if (result.success) {
+            this.form.reset();
+            this.id = null;
+            this.alterarModo();
+            this.load{Classname}();
+          }
+        },
+        error => {
+          this.exibirAlerta(error.message, false);
+          console.log(error);
+        });
+
+    }
+    else {
+
+      this.api{Classname}.post(this.{classname}).subscribe(
+        result => {
+
+          this.exibirAlerta(result.message, result.success);
+
+          if (result.success) {
+            this.form.reset();
+            this.alterarModo();
+            this.load{Classname}();
+          }
+        },
+        error => {
+          this.exibirAlerta(error.message, false);
+          console.log(error);
+        });
+    }
+  }
+
+  voltar() {
+    this.id = null;
+    this.alterarModo();
+  }
+
+  exibirAlerta(msg: String, success: Boolean) {
+    this.errorMessage = msg;
+    this.success = success;
+
+    setTimeout(() => {
+      this.errorMessage = null;
+    }, 5000);
+  }
+
+  alterarModo() {
+    this.modo = this.modo == 'Novo' ? this.id != undefined ? 'Edit' : 'List' : 'Novo';
+
+    if (this.id == null)
+      this.form.reset();
+  }
+
+  edit(item: {Classname}) {
+    this.id = item.id;
+    this.form.controls.id.setValue(item.id);
+    this.form.controls.primeiroNome.setValue(item.primeiroNome);
+    this.form.controls.ultimoNome.setValue(item.ultimoNome);
+    this.form.controls.email.setValue(item.email);
+    this.form.controls.telefoneDDD.setValue(item.telefoneDDD.toString());
+    this.form.controls.telefoneNumero.setValue(item.telefoneNumero.toString());
+
+    this.alterarModo();
+
+    this.{classname} = item;
+  }
+}

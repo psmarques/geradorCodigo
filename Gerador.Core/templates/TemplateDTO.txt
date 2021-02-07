@@ -1,0 +1,10 @@
+﻿
+namespace {namespace}.DTO
+{
+    publilc class {Classname}DTO
+    {
+
+{methods}
+
+    }
+}

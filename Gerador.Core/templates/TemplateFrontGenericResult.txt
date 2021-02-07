@@ -1,0 +1,9 @@
+﻿export class GenericResult {
+  constructor(
+    public success: Boolean,
+    public message: String,
+    public data: any
+  ) {
+
+  }
+}

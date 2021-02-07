@@ -1,0 +1,37 @@
+﻿import { Inject, Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { {classname} } from '../models/{classname}.model';
+import { GenericResult } from '../models/genericResult.model';
+
+@Injectable()
+export class {Classname}Service {
+
+  private http: HttpClient;
+  private baseUrl: string;
+  private headerOptions = {
+    headers: new HttpHeaders().set('Content-Type', 'application/json')
+  };
+
+  constructor(httpClient: HttpClient, @Inject('BASE_URL') pBaseUrl: string) {
+    this.http = httpClient;
+    this.baseUrl = pBaseUrl;
+  }
+
+  getAll(): Observable<{Classname}[]> {
+    return this.http.get<{classname}[]>(this.baseUrl + '{classname}');
+  }
+
+  post(item: {Classname}): Observable<GenericResult> {
+    return this.http.post<GenericResult>(this.baseUrl + '{classname}', item, this.headerOptions);
+  }
+
+  update(item: {Classname}): Observable<GenericResult> {
+    return this.http.put<GenericResult>(this.baseUrl + '{classname}', item, this.headerOptions);
+  }
+
+  delete(id: String) {
+    return this.http.delete<GenericResult>(this.baseUrl + '{classname}?id=' + id);
+  }
+
+}
